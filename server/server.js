@@ -8,6 +8,8 @@ const { User } = require('./models/User')
 
 const app = express()
 
+const port = process.env.port || 3000
+
 // Using middleware
 app.use(bodyParser.json())
 
@@ -80,8 +82,8 @@ app.post('/users', (req,res) => {
 
 // Takes in the port number as its first argument
 
-app.listen(3000, () => {
-	console.log('Starting on port 3000');
+app.listen(port, () => {
+	console.log('Starting on: ' + port);
 })
 
 module.exports = { app }
