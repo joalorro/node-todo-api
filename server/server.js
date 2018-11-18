@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const { ObjectID } = require('mongodb')
 
 const { mongoose } = require('./db/mongoose')
 const { Todo } = require('./models/Todo')
@@ -13,18 +14,37 @@ app.use(bodyParser.json())
 app.get('/todos', (req,res) => {
 	Todo.find().then( (todos) => {
 		console.log("GET /todos status OK");
-		const formattedData = todos.map( (t) => {
-			return {
-				_id: t._id,
-				text: t.text,
-				completed: t.completed,
-				completedAt: t.completedAt
-			}
-		})
 		res.send({ todos })
 	}, (e) => {
 		console.log("ERROR with GET /todos");
 		res.status(400).send(e)
+	})
+})
+
+// GET /todos/:id
+
+app.get('/todos/:id', (req,res) => {
+	const id = req.params.id
+	
+	if (!ObjectID.isValid(id)){
+		console.log('Unable to find ID')
+		return res.status(404).send({
+			status: 404,
+			error: 'ID not found'
+		})
+	} 
+	Todo.findById(id).then( (todo) => {
+		console.log('GET /todos/' + id)
+		if (!todo){
+			return res.status(404).send()
+		}
+		return res.send({ todo })
+	}).catch( (e) => {
+		console.log('ID not found');
+		return res.status(400).send({
+			status: 400,
+			error: 'ID not found'
+		})
 	})
 })
 
