@@ -13,6 +13,10 @@ const port = process.env.port || 3000
 // Using middleware
 app.use(bodyParser.json())
 
+app.get('/', (req,res) => {
+	res.render('Home')
+})
+
 app.get('/todos', (req,res) => {
 	Todo.find().then( (todos) => {
 		console.log("GET /todos status OK");
