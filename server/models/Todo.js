@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+mongoose.set('debug', true)
 
 const Todo = mongoose.model('Todo', {
 	text: {
@@ -16,6 +17,6 @@ const Todo = mongoose.model('Todo', {
 		type: Number,
 		defaul: null,
 	}
-})
+}, "Todo")
 
 module.exports = { Todo }

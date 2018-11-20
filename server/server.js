@@ -12,11 +12,9 @@ const port = process.env.PORT || 3000
 // Using middleware
 app.use(bodyParser.json())
 
-app.get('/', (req,res) => {
-	res.render('Home')
-})
-
 app.get('/todos', (req,res) => {
+	console.log('getting todos');
+
 	Todo.find().then( (todos) => {
 		console.log("GET /todos status OK");
 		res.send({ todos })
@@ -80,6 +78,26 @@ app.post('/users', (req,res) => {
 	}, (e) => {
 		console.log('unable to save user',e);
 		res.status(400).send(e)
+	})
+})
+
+app.delete('/todos/:id', (req,res) => {
+	const id = req.params.id
+
+	if (!ObjectID.isValid(id)) {
+		return res.status(404).send()
+	} 
+
+	Todo.findByIdAndRemove(id).then( (todo) => {
+		
+		if (!todo) return res.status(404).send()
+		
+		console.log(todo)
+		res.status(200).send(todo)
+
+	}).catch( (e) => {
+		console.log(e)
+		res.status(404).send()
 	})
 })
 
